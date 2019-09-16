@@ -16,7 +16,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button buttonScan,buttonViewAll;
+    Button buttonScan,buttonViewAll,count;
     TextView resultText;
 
     //qr code scanner object
@@ -32,10 +32,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myDB = new DatabaseHelper(this);
 
         buttonScan = findViewById(R.id.scan);
+        count = findViewById(R.id.count);
         resultText = findViewById(R.id.resultText);
         buttonViewAll = findViewById(R.id.button_viewAll);
 
-        AddData();
+        count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // int profile_counts = db.getProfilesCount();
+                //db.close();
+
+                Toast.makeText(MainActivity.this, ""+myDB.getProfilesCount(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //AddData();
 
         viewAll();
 
@@ -90,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 Toast.makeText(MainActivity.this, ""+buffer.toString(), Toast.LENGTH_SHORT).show();
+
+
             }
         });
     }
