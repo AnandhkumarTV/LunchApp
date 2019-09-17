@@ -1,12 +1,15 @@
 package tv.anandhkumar.lunch;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +22,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonScan,buttonViewAll,count;
     TextView resultText;
 
+    ImageView resultimageView;
+
     //qr code scanner object
     private IntentIntegrator qrScan;
+
+    AlertDialog.Builder builder;
 
     DatabaseHelper myDB;
 
@@ -35,7 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         count = findViewById(R.id.count);
         resultText = findViewById(R.id.resultText);
         buttonViewAll = findViewById(R.id.button_viewAll);
+        resultimageView = findViewById(R.id.imageView);
 
+        builder = new AlertDialog.Builder(this);
+
+        resultimageView.setVisibility(View.GONE);
         count.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +111,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     buffer.append("ID: "+cursor.getString(0)+"\n");
 
                 }
-                Toast.makeText(MainActivity.this, ""+buffer.toString(), Toast.LENGTH_SHORT).show();
+
+                builder.setMessage(buffer.toString())
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.setTitle("Completed List");
+                alert.show();
+                //Toast.makeText(MainActivity.this, ""+buffer.toString(), Toast.LENGTH_SHORT).show();
 
 
             }
@@ -136,9 +160,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 resultText.getText().toString());
 
         if (isInserted == true){
+
             Toast.makeText(getApplicationContext(),"Had your lunch :-)",Toast.LENGTH_SHORT).show();
+            resultimageView.setImageResource(R.drawable.success);
+            resultimageView.setVisibility(View.VISIBLE);
         }else{
             Toast.makeText(getApplicationContext(),"Already Visited :-(",Toast.LENGTH_SHORT).show();
+            resultimageView.setImageResource(R.drawable.failure);
+            resultimageView.setVisibility(View.VISIBLE);
         }
     }
     @Override
